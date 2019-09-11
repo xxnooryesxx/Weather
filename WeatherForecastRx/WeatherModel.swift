@@ -8,8 +8,36 @@
 
 import Foundation
 
-let APIKey = "39aabae35289a57382031062adf9f9f0"
 
 struct WeatherModel: Codable {
-    <#fields#>
+    var weather: [WeatherDetails]
+    var main: Temps
+    var name: String
+}
+
+struct WeatherDetails: Codable {
+    var main: String
+    var description: String
+    var icon: String
+}
+
+struct Temps: Codable {
+    var temp: Double
+}
+
+
+//forecast
+
+struct ForecastWeather: Codable {
+    var list: FutureContent
+    var city: Cityinfo
+}
+
+struct FutureContent: Codable {
+    var weather: [WeatherDetails]
+    var main: Temps
+}
+
+struct Cityinfo: Codable {
+    var name: String
 }
