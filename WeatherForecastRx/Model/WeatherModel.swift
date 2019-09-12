@@ -23,17 +23,20 @@ struct WeatherDetails: Codable {
 
 struct Temps: Codable {
     var temp: Double
+    var temp_min: Double
+    var temp_max: Double
 }
 
 
 //forecast
 
 struct ForecastWeather: Codable {
-    var list: FutureContent
+    var list: [FutureContent]
     var city: Cityinfo
 }
 
 struct FutureContent: Codable {
+    var dt: Int
     var weather: [WeatherDetails]
     var main: Temps
 }
