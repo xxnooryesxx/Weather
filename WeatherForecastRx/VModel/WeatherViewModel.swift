@@ -49,8 +49,8 @@ class WeatherViewModel {
     }
     
     
-    func setupForecast(lat: Double, lon: Double) -> Observable<ForecastWeather> {
-        return Observable<ForecastWeather>.create({ (obs) -> Disposable in
+    func setupForecast(lat: Double, lon: Double) -> Observable<[ForecastWeather]> {
+        return Observable<[ForecastWeather]>.create({ (obs) -> Disposable in
             
             let forcastURL = "https://api.openweathermap.org/data/2.5/forecast?lat=\(lat)&lon=\(lon)&units=metric&APPID=\(self.APIKey)"
             
@@ -62,7 +62,7 @@ class WeatherViewModel {
                 URLSession.shared.rx.data(request: req)
                     .subscribe(onNext: { (data) in
                         do{
-                            let forecast = try JSONDecoder().decode(ForecastWeather.self, from: data)
+                            let forecast = try JSONDecoder().decode([ForecastWeather].self, from: data)
                             obs.onNext(forecast)
                             obs.onCompleted()
                             

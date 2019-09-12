@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class ViewController: UIViewController {
+class CityViewController: UIViewController {
 
     @IBOutlet weak var progressView: UIActivityIndicatorView!
     
@@ -19,18 +19,21 @@ class ViewController: UIViewController {
     @IBOutlet weak var lblDescription: UILabel!
     @IBOutlet weak var lblTemp: UILabel!
     @IBOutlet weak var lblHLTemp: UILabel!
-    
     @IBOutlet weak var clctionView: UICollectionView!
     
     let bag = DisposeBag()
     let vm = WeatherViewModel()
+    
+    var lat: Double = 0
+    var lon: Double = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         progressView.hidesWhenStopped = true
-        setupCurrentWeather(lat: 41.917359, lon: -88.265421)
-        setupForecast(lat: 41.917359, lon: -88.265421)
+        setupCurrentWeather(lat: lat, lon: lon)
+        setupForecast(lat: lat, lon: lon)
+        
     }
     
     func setupCurrentWeather(lat: Double, lon: Double) {
@@ -67,7 +70,7 @@ class ViewController: UIViewController {
             
             
             cell.lblCity.text = self.lblCity.text
-            cell.lblHLTemp.text = "\(String(format: "%.1f", weather.main.temp_max))°\n ---- \n\(String(format: "%.1f", weather.main.temp_min))°"
+            cell.lblHLTemp.text = "\(String(format: "%.1f", weather.main.temp_max))° / \(String(format: "%.1f", weather.main.temp_min))°"
             
             let iconURL = "https://openweathermap.org/img/wn/\(weather.weather[0].icon)@2x.png"
             do{

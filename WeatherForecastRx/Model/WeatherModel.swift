@@ -44,3 +44,9 @@ struct FutureContent: Codable {
 struct Cityinfo: Codable {
     var name: String
 }
+
+struct Cities {
+    var city: String
+    var lattitude: Double
+    var lontitude: Double
+}
