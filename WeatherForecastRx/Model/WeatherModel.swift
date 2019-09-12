@@ -46,7 +46,6 @@ struct Cityinfo: Codable {
 }
 
 struct Cities {
-    var city: String
     var lattitude: Double
     var lontitude: Double
 }

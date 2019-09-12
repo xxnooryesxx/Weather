@@ -20,29 +20,35 @@ class MainViewController: UIViewController {
     
     let vm = WeatherViewModel()
     let bag = DisposeBag()
+    let locationManager = CLLocationManager()
+    let listTblviewGroup = DispatchGroup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let Chicago = Cities(city: "Chicago", lattitude: 41.917359, lontitude:  -88.265421)
+        let Chicago = Cities(lattitude: 31.917359, lontitude:  -80.265421)
         cities.append(Chicago)
         
-        print(cities)
-        ct.accept(ct.value + cities)
-        print(ct)
         
-        for city in cities{
-            setTblWeather(lat: city.lattitude, lon: city.lontitude)
+        requestLocation()
+        if CLLocationManager.locationServicesEnabled(){
+            locationManager.startUpdatingLocation()
         }
+        
+//
+//        for city in self.cities{
+//            self.setTblWeather()
+//        }
+        setTblWeather()
         selectCity()
         
     }
     
-    func setTblWeather(lat: Double, lon: Double) {
+    func setTblWeather() {
         
-        ct.asObservable().bind(to: tblView.rx.items(cellIdentifier: "cell", cellType: MainTableViewCell.self)) { (row, element, cell) in
+        ct.asObservable().bind(to: tblView.rx.items(cellIdentifier: "cell", cellType: MainTableViewCell.self)) { (row, data, cell) in
             
-            self.vm.setupWeather(lat: lat, lon: lon).subscribe(onNext: { (weather) in
+            self.vm.setupWeather(lat: data.lattitude, lon: data.lontitude).subscribe(onNext: { (weather) in
                 
                 let iconURL = "https://openweathermap.org/img/wn/\(weather.weather[0].icon)@2x.png"
                 do{
@@ -86,5 +92,22 @@ class MainViewController: UIViewController {
 
 extension MainViewController: CLLocationManagerDelegate{
     
+    func requestLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let lct = locations.last{
+            
+            cities.append(Cities(lattitude:lct.coordinate.latitude
+, lontitude: lct.coordinate.longitude))
+            
+            ct.accept(ct.value + cities)
+            locationManager.stopUpdatingLocation()
+            
+        }
+    }
 }
