@@ -15,8 +15,6 @@ class WeatherViewModel {
     let bag = DisposeBag()
     let APIKey = "39aabae35289a57382031062adf9f9f0"
 
-    
-    
     func setupWeather(lat: Double, lon: Double) -> Observable<WeatherModel> {
         
         return Observable<WeatherModel>.create({ (obs) -> Disposable in

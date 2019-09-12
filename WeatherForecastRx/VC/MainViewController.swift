@@ -9,13 +9,16 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import MaterialComponents.MaterialButtons
+
 import CoreLocation
+import GooglePlaces
 
 class MainViewController: UIViewController {
     
     @IBOutlet weak var tblView: UITableView!
+    @IBOutlet weak var btnAdd: MDCButton!
     
-    var cities: [Cities] = []
     var ct = BehaviorRelay<[Cities]>(value: [])
     
     let vm = WeatherViewModel()
@@ -26,22 +29,16 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let Chicago = Cities(lattitude: 31.917359, lontitude:  -80.265421)
-        cities.append(Chicago)
-        
+        btnAdd.setElevation(ShadowElevation(rawValue: 6), for: .normal)
         
         requestLocation()
         if CLLocationManager.locationServicesEnabled(){
             locationManager.startUpdatingLocation()
         }
         
-//
-//        for city in self.cities{
-//            self.setTblWeather()
-//        }
         setTblWeather()
         selectCity()
-        
+        deleteCity()
     }
     
     func setTblWeather() {
@@ -81,11 +78,22 @@ class MainViewController: UIViewController {
                 dispatchG.leave()
             }).disposed(by: self.bag)
             
-            
             dispatchG.notify(queue: DispatchQueue.main, execute: {
                 self.navigationController?.pushViewController(vc, animated: true)
             })
         })
+    }
+    
+    func deleteCity() {
+        tblView.rx.itemDeleted.subscribe(onNext: { (indexpath) in
+            var arr = self.ct.value
+            arr.remove(at: indexpath.row)
+            self.ct.accept(arr)
+        }).disposed(by: bag)
+    }
+    
+    @IBAction func addLocation(_ sender: Any) {
+        pickLocation()
     }
     
 }
@@ -102,12 +110,45 @@ extension MainViewController: CLLocationManagerDelegate{
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let lct = locations.last{
             
-            cities.append(Cities(lattitude:lct.coordinate.latitude
-, lontitude: lct.coordinate.longitude))
-            
-            ct.accept(ct.value + cities)
+            ct.accept(ct.value + [Cities(lattitude:lct.coordinate.latitude
+                , lontitude: lct.coordinate.longitude)])
             locationManager.stopUpdatingLocation()
-            
         }
     }
+}
+
+
+extension MainViewController: GMSAutocompleteViewControllerDelegate{
+    
+    func pickLocation() {
+        let autoComplete = GMSAutocompleteViewController()
+        autoComplete.delegate = self
+        present(autoComplete, animated: true)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        
+        ct.accept(ct.value + [Cities(lattitude: place.coordinate.latitude
+            , lontitude: place.coordinate.longitude)])
+
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        print("Fail to autocomplete: \(error.localizedDescription)")
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+//    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//
+//    }
+//
+//    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+//        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//    }
+    
 }

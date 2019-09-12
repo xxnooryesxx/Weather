@@ -57,7 +57,7 @@ class CityViewController: UIViewController {
             DispatchQueue.main.async {
                 self.lblCity.text   = weather.name
                 self.lblTemp.text   =  "\(String(format: "%.1f", weather.main.temp))℃ "
-                self.lblHLTemp.text = "\(String(format: "%.1f", weather.main.temp_max))°\n ---- \n\(String(format: "%.1f", weather.main.temp_min))°"
+                self.lblHLTemp.text = "\(String(format: "%.1f", weather.main.temp_max))°\n ——— \n\(String(format: "%.1f", weather.main.temp_min))°"
                 self.lblDescription.text = weather.weather[0].main
             }
             
