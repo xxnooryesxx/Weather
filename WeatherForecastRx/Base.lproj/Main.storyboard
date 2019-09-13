@@ -60,7 +60,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="10" maximumZoomScale="10" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="D1x-xP-ylg">
-                                <rect key="frame" x="20" y="600" width="374" height="242"/>
+                                <rect key="frame" x="20" y="770" width="374" height="242"/>
                                 <color key="backgroundColor" red="0.36667760310000003" green="0.4049267942" blue="0.69259597080000002" alpha="0.24978595889999999" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="242" id="da9-sv-9Bi"/>
@@ -130,6 +130,7 @@
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="dD3-FU-nJm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="0lG-uR-6Xg"/>
                             <constraint firstItem="Xte-Dg-Hz9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="7pK-hL-n6n" secondAttribute="trailing" constant="20" id="56i-Vk-Eqd"/>
@@ -144,7 +145,7 @@
                             <constraint firstItem="7pK-hL-n6n" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ZOP-jc-63C"/>
                             <constraint firstItem="JOF-FW-zih" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="a4R-yt-8Eu"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dD3-FU-nJm" secondAttribute="trailing" constant="40" id="bAK-to-Eg9"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="D1x-xP-ylg" secondAttribute="bottom" constant="20" id="erC-ob-rGD"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="D1x-xP-ylg" secondAttribute="bottom" constant="-150" id="erC-ob-rGD"/>
                             <constraint firstItem="Sgn-LV-TIn" firstAttribute="top" secondItem="dD3-FU-nJm" secondAttribute="bottom" constant="100" id="erR-VO-Yuc"/>
                             <constraint firstItem="Xte-Dg-Hz9" firstAttribute="top" secondItem="Sgn-LV-TIn" secondAttribute="bottom" constant="52" id="frb-QT-VP1"/>
                             <constraint firstItem="jcc-ck-w7l" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="gIF-aW-MeX"/>
@@ -160,6 +161,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="bottomConstraint" destination="erC-ob-rGD" id="x0j-mZ-FAc"/>
                         <outlet property="clctionView" destination="D1x-xP-ylg" id="P7H-Qh-V16"/>
                         <outlet property="imgIcon" destination="Sgn-LV-TIn" id="zoA-eq-KHo"/>
                         <outlet property="lblCity" destination="dD3-FU-nJm" id="cZo-ab-9bW"/>
@@ -176,7 +178,7 @@
         <!--Main View Controller-->
         <scene sceneID="gPg-An-DXH">
             <objects>
-                <viewController id="qCI-vm-mQL" customClass="MainViewController" customModule="WeatherForecastRx" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" id="qCI-vm-mQL" customClass="MainViewController" customModule="WeatherForecastRx" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IoD-je-Ni0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -247,6 +249,9 @@
                                     <action selector="addLocation:" destination="qCI-vm-mQL" eventType="touchUpInside" id="6RE-4C-U9m"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="ndK-HT-p3V">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -256,6 +261,7 @@
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="trailing" secondItem="0iS-hc-SdG" secondAttribute="trailing" id="IO3-9c-OHj"/>
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="bottom" secondItem="VKp-oU-Vid" secondAttribute="bottom" constant="40" id="IZV-V5-EmD"/>
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="bottom" secondItem="0iS-hc-SdG" secondAttribute="bottom" id="MiN-Ss-Y4f"/>
+                            <constraint firstItem="ndK-HT-p3V" firstAttribute="centerY" secondItem="IoD-je-Ni0" secondAttribute="centerY" id="Muk-hM-PPJ"/>
                             <constraint firstItem="kG5-DU-N7p" firstAttribute="top" secondItem="5NI-b3-xjD" secondAttribute="top" id="UNI-tH-P1g"/>
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="bottom" secondItem="kG5-DU-N7p" secondAttribute="bottom" id="UW7-72-ZSo"/>
                             <constraint firstItem="kG5-DU-N7p" firstAttribute="leading" secondItem="5NI-b3-xjD" secondAttribute="leading" id="bwH-XU-IC3"/>
@@ -263,21 +269,15 @@
                             <constraint firstItem="kG5-DU-N7p" firstAttribute="leading" secondItem="5NI-b3-xjD" secondAttribute="leading" id="gVf-gt-ESa"/>
                             <constraint firstAttribute="trailing" secondItem="VKp-oU-Vid" secondAttribute="trailing" constant="40" id="hXL-CF-s6O"/>
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="trailing" secondItem="kG5-DU-N7p" secondAttribute="trailing" id="pPx-xA-00j"/>
+                            <constraint firstItem="ndK-HT-p3V" firstAttribute="centerX" secondItem="IoD-je-Ni0" secondAttribute="centerX" id="sFV-qa-VLd"/>
                             <constraint firstItem="5NI-b3-xjD" firstAttribute="bottom" secondItem="kG5-DU-N7p" secondAttribute="bottom" id="yt4-Gt-2Pt"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="5NI-b3-xjD"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Fw9-L8-Bsb">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="4T8-7z-acL">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fOd-8s-16e">
-                                <rect key="frame" x="302" y="7" width="92" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                            </button>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="Fw9-L8-Bsb"/>
                     <connections>
                         <outlet property="btnAdd" destination="VKp-oU-Vid" id="MYt-fw-CLb"/>
+                        <outlet property="progressView" destination="ndK-HT-p3V" id="yY0-E4-75M"/>
                         <outlet property="tblView" destination="bqD-N6-2En" id="3jZ-kQ-gPU"/>
                     </connections>
                 </viewController>

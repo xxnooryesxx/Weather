@@ -19,26 +19,27 @@ class MainViewController: UIViewController {
     @IBOutlet weak var tblView: UITableView!
     @IBOutlet weak var btnAdd: MDCButton!
     
-    var ct = BehaviorRelay<[Cities]>(value: [])
+    @IBOutlet weak var progressView: UIActivityIndicatorView!
     
+    var ct = BehaviorRelay<[Cities]>(value: [])
     let vm = WeatherViewModel()
     let bag = DisposeBag()
     let locationManager = CLLocationManager()
-    let listTblviewGroup = DispatchGroup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        btnAdd.setElevation(ShadowElevation(rawValue: 6), for: .normal)
-        
         requestLocation()
-        if CLLocationManager.locationServicesEnabled(){
-            locationManager.startUpdatingLocation()
-        }
-        
+        setUI()
         setTblWeather()
         selectCity()
         deleteCity()
+    }
+    
+    func setUI() {
+        btnAdd.setElevation(ShadowElevation(rawValue: 6), for: .normal)
+        progressView.startAnimating()
+        progressView.hidesWhenStopped = true
     }
     
     func setTblWeather() {
@@ -56,6 +57,7 @@ class MainViewController: UIViewController {
                         cell.lblCity.text = weather.name
                         cell.lblHLTemp.text = "\(String(format: "%.1f", weather.main.temp_max))° / \(String(format: "%.1f", weather.main.temp_min))°"
                         cell.imgIcon.image = UIImage(data: imgData)
+                        self.progressView.stopAnimating()
                     }
                 } catch {
                     print("Error in parse img: \(error.localizedDescription)")
@@ -67,20 +69,15 @@ class MainViewController: UIViewController {
     func selectCity() {
         tblView.rx.itemSelected.subscribe(onNext: { (indexpath) in
             
-            let dispatchG = DispatchGroup()
             let main = UIStoryboard.init(name: "Main", bundle: nil)
             let vc = main.instantiateViewController(withIdentifier: "CityViewController") as! CityViewController
             
-            dispatchG.enter()
             self.ct.subscribe(onNext: { (cities) in
                 vc.lat = cities[indexpath.row].lattitude
                 vc.lon = cities[indexpath.row].lontitude
-                dispatchG.leave()
+                self.navigationController?.pushViewController(vc, animated: true)
             }).disposed(by: self.bag)
             
-            dispatchG.notify(queue: DispatchQueue.main, execute: {
-                self.navigationController?.pushViewController(vc, animated: true)
-            })
         })
     }
     
@@ -105,11 +102,16 @@ extension MainViewController: CLLocationManagerDelegate{
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
+        
+        if CLLocationManager.locationServicesEnabled(){
+            locationManager.startUpdatingLocation()
+        }
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
         if let lct = locations.last{
-            
             ct.accept(ct.value + [Cities(lattitude:lct.coordinate.latitude
                 , lontitude: lct.coordinate.longitude)])
             locationManager.stopUpdatingLocation()
@@ -141,14 +143,4 @@ extension MainViewController: GMSAutocompleteViewControllerDelegate{
     func wasCancelled(_ viewController: GMSAutocompleteViewController) {
         dismiss(animated: true, completion: nil)
     }
-    
-//    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-//
-//    }
-//
-//    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-//    }
-    
 }
